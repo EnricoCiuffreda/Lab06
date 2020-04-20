@@ -6,6 +6,10 @@ package it.polito.tdp.meteo;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.meteo.model.Model;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +17,18 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 
 public class FXMLController {
+	private Model model;
+	private ObservableList<Integer> listamesi=FXCollections.observableArrayList();
+    public void setmodel(Model model) {
+    	this.model=model;
+    	this.popolabox();
+    	
+    }
+    private void popolabox(){
+    	for(int i=1;i<=12;i++)
+    	listamesi.add(i);
+		boxMese.setItems(listamesi);
+    }
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -21,7 +37,7 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxMese"
-    private ChoiceBox<?> boxMese; // Value injected by FXMLLoader
+    private ChoiceBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnUmidita"
     private Button btnUmidita; // Value injected by FXMLLoader
@@ -34,12 +50,16 @@ public class FXMLController {
 
     @FXML
     void doCalcolaSequenza(ActionEvent event) {
-
+    	Integer mese=boxMese.getValue();
+    	String risultato=model.trovaSequenza(mese);
+    	txtResult.appendText(risultato);
     }
 
     @FXML
     void doCalcolaUmidita(ActionEvent event) {
-
+    	Integer mese=boxMese.getValue();
+    	String risultato=model.getUmiditaMedia(mese);
+    	txtResult.appendText(risultato);
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -48,7 +68,6 @@ public class FXMLController {
         assert btnUmidita != null : "fx:id=\"btnUmidita\" was not injected: check your FXML file 'Scene.fxml'.";
         assert btnCalcola != null : "fx:id=\"btnCalcola\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Scene.fxml'.";
-
     }
 }
 
